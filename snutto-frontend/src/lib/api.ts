@@ -26,10 +26,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://snutto-webapp-backen
 
 export const joinWaitlist = async (data: WaitlistFormData) => {
   try {
-    const response = await fetch(`${API_URL}/api/users/joinWaitList`, {
-      method: 'POST',
+    const response = await fetch('https://snutto-webapp-backend.onrender.com/api/users/joinWaitList', {
+  method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(data)
+  body: JSON.stringify({
+    name: data.name,
+    email: data.email,
+    contactNo: data.contactNo.replace(/\D/g, '') // Clean phone number
+  })
     });
 
     // Handle non-JSON responses
