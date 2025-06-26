@@ -22,7 +22,7 @@ interface ImportMeta {
   };
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://snutto-webapp-backend.onrender.com';
 
 export const joinWaitlist = async (data: WaitlistFormData) => {
   try {
