@@ -1,9 +1,10 @@
 import { Router } from "express";
 import * as userController from '../controllers/user.controller.js';
 import { body } from 'express-validator';
+import { validateRequest } from '../middlewares/validate-request.js'; // Add this
 
 const router = Router();
-router.post('/joinWaitList', userController.joinWaitList);
+
 router.post('/joinWaitList',
   [
     body('name')
@@ -21,6 +22,7 @@ router.post('/joinWaitList',
       .isLength({ min: 10, max: 10 }).withMessage("Contact number must be 10 digits")
       .matches(/^\d+$/).withMessage("Contact number must contain only digits")
   ],
+  validateRequest, // Add this middleware
   userController.joinWaitList
 );
 
