@@ -9,13 +9,27 @@ import cors from 'cors';
 import userRouter from './routes/user.route.js';
 
 const app = express();
+
 app.use(cors({
-  origin: [
-    'http://localhost:3001',
-    'http://localhost:5173' 
-  ],
+  origin: 'https://snutto.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Or allow multiple origins
+const allowedOrigins = [
+  'https://snutto.onrender.com',
+  'http://localhost:3000' // for local development
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(morgan('dev'));
