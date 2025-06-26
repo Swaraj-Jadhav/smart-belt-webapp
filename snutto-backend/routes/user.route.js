@@ -5,7 +5,7 @@ import { validateRequest } from './../middlewares/validate-request.js';
 
 const router = Router();
 
-router.post('/joinWaitList',
+router.post('/users/joinWaitList',
   [
     body('name')
       .notEmpty().withMessage("Name is required")
@@ -23,7 +23,7 @@ router.post('/joinWaitList',
       .matches(/^\d+$/).withMessage("Contact number must contain only digits")
   ],
   validateRequest, // Add this middleware
-  userController.joinWaitList
+   userController.joinWaitList
 );
 
 export default router;
