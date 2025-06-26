@@ -1,21 +1,12 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { joinWaitlist } from '@/lib/api';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { toast } from 'sonner';
-import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-// Define validation schema with Zod
+// Define validation schema with Zod (for manual validation)
 const waitlistFormSchema = z.object({
   name: z.string()
     .min(2, { message: 'Name must be at least 2 characters' })
@@ -35,134 +26,160 @@ interface WaitlistFormProps {
 }
 
 export function WaitlistForm({ onSuccess }: WaitlistFormProps) {
-  const form = useForm<WaitlistFormValues>({
-    resolver: zodResolver(waitlistFormSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      contactNo: ''
-    }
+  const [formData, setFormData] = useState<WaitlistFormValues>({
+    name: '',
+    email: '',
+    contactNo: ''
   });
+  const [errors, setErrors] = useState<Partial<WaitlistFormValues>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (data: WaitlistFormValues) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    // Special handling for phone number formatting
+    if (name === 'contactNo') {
+      const numericValue = value.replace(/\D/g, '');
+      let formattedValue = numericValue;
+      
+      if (numericValue.length > 3 && numericValue.length <= 6) {
+        formattedValue = `${numericValue.slice(0, 3)}-${numericValue.slice(3)}`;
+      } else if (numericValue.length > 6) {
+        formattedValue = `${numericValue.slice(0, 3)}-${numericValue.slice(3, 6)}-${numericValue.slice(6, 10)}`;
+      }
+      
+      setFormData(prev => ({ ...prev, [name]: formattedValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+    
+    // Clear error when user starts typing
+    if (errors[name as keyof WaitlistFormValues]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
     try {
-      // Clean phone number before submission
+      waitlistFormSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Partial<WaitlistFormValues> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as keyof WaitlistFormValues] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
       const cleanedData = {
-        ...data,
-        contactNo: data.contactNo.replace(/\D/g, '') // Remove all non-digit characters
+        ...formData,
+        contactNo: formData.contactNo.replace(/\D/g, '')
       };
+
+      if (cleanedData.contactNo.length !== 10) {
+        toast.error('Enter valid 10-digit contact number');
+        setIsSubmitting(false);
+        return;
+      }
 
       const result = await joinWaitlist(cleanedData);
       if (result.success) {
         toast.success('You have joined the waitlist successfully!');
-        form.reset();
+        setFormData({ name: '', email: '', contactNo: '' });
         onSuccess?.();
       } else {
         toast.error(result.error || 'Failed to join waitlist');
       }
     } catch (error) {
-       const cleanedData = {
-        ...data,
-        contactNo: data.contactNo.replace(/\D/g, '') // Remove all non-digit characters
-      };
-      if(cleanedData.contactNo.length!=10){
-      toast.error('Enter valid contact number');
-      }
-      
-
+      toast.error('An unexpected error occurred');
       console.error('Waitlist submission error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  // Format phone number as user types
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
-    const value = e.target.value.replace(/\D/g, '');
-    let formattedValue = value;
-    
-    if (value.length > 3 && value.length <= 6) {
-      formattedValue = `${value.slice(0, 3)}-${value.slice(3)}`;
-    } else if (value.length > 6) {
-      formattedValue = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6, 10)}`;
-    }
-    
-    field.onChange(formattedValue);
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <label htmlFor="name" className="block text-sm font-medium">
+          Full Name
+        </label>
+        <Input
+          id="name"
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Your name" 
-                  {...field} 
-                  className={form.formState.errors.name ? 'border-red-500' : ''}
-                />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
-            </FormItem>
-          )}
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Your name"
+          className={errors.name ? 'border-red-500' : ''}
         />
-        
-        <FormField
-          control={form.control}
+        {errors.name && (
+          <p className="text-red-500 text-sm">{errors.name}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="email" className="block text-sm font-medium">
+          Email
+        </label>
+        <Input
+          id="email"
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input 
-                  type="email" 
-                  placeholder="your@email.com" 
-                  {...field} 
-                  className={form.formState.errors.email ? 'border-red-500' : ''}
-                />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
-            </FormItem>
-          )}
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="your@email.com"
+          className={errors.email ? 'border-red-500' : ''}
         />
-        
-        <FormField
-          control={form.control}
+        {errors.email && (
+          <p className="text-red-500 text-sm">{errors.email}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="contactNo" className="block text-sm font-medium">
+          Phone Number
+        </label>
+        <Input
+          id="contactNo"
           name="contactNo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="123-456-7890" 
-                  {...field}
-                  onChange={(e) => handlePhoneChange(e, field)}
-                  className={form.formState.errors.contactNo ? 'border-red-500' : ''}
-                />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm">
-                {form.formState.errors.contactNo && (
-                  <span>
-                    {form.formState.errors.contactNo.message}
-                    <br />
-                    Example format: 123-456-7890
-                  </span>
-                )}
-              </FormMessage>
-            </FormItem>
-          )}
+          value={formData.contactNo}
+          onChange={handleChange}
+          placeholder="123-456-7890"
+          className={errors.contactNo ? 'border-red-500' : ''}
         />
-        
-        <Button 
-          type="submit" 
-          className="w-full"
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? 'Submitting...' : 'Submit'}
-        </Button>
-      </form>
-    </Form>
+        {errors.contactNo && (
+          <p className="text-red-500 text-sm">
+            {errors.contactNo}
+            <br />
+            Example format: 123-456-7890
+          </p>
+        )}
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Submitting...' : 'Submit'}
+      </Button>
+    </form>
   );
 }
