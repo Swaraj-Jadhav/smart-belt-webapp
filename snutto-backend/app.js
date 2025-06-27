@@ -5,7 +5,7 @@ import userRoutes from './routes/user.route.js';
 const app = express();
 
 // Middleware (must come before routes)
-aapp.use(cors({
+app.use(cors({
   origin: [
     'https://snutto.onrender.com/',
     'http://localhost:3000'
