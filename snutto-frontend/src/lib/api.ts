@@ -1,5 +1,6 @@
 // lib/api.ts
 import { toast } from 'sonner';
+import config from '@/config';
 
 interface WaitlistFormData {
   name: string;
@@ -18,10 +19,8 @@ export const checkBackendStatus = async (): Promise<Response> => {
 };
 
 export const joinWaitlist = async (data: WaitlistFormData) => {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  
   try {
-    const response = await fetch(`${API_URL}/api/users/joinWaitList`, {
+    const response = await fetch(`${config.apiUrl}/api/users/joinWaitList`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -57,7 +56,7 @@ export const joinWaitlist = async (data: WaitlistFormData) => {
     }
   } catch (error) {
     console.error('Full API error:', {
-      url: `${API_URL}/api/users/joinWaitList`,
+      url: `${config.apiUrl}/api/users/joinWaitList`,
       error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
