@@ -18,8 +18,10 @@ export const checkBackendStatus = async (): Promise<Response> => {
 };
 
 export const joinWaitlist = async (data: WaitlistFormData) => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/joinWaitList`, {
+    const response = await fetch(`${API_URL}/api/users/joinWaitList`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -29,14 +31,35 @@ export const joinWaitlist = async (data: WaitlistFormData) => {
       })
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to join waitlist');
+    // First check if response exists
+    if (!response) {
+      throw new Error('No response received from server');
     }
 
-    return await response.json();
+    // Check for empty response
+    const responseText = await response.text();
+    if (!responseText) {
+      throw new Error('Empty response from server');
+    }
+
+    // Try parsing JSON
+    try {
+      const jsonResponse = JSON.parse(responseText);
+      
+      if (!response.ok) {
+        throw new Error(jsonResponse.message || 'Request failed');
+      }
+      
+      return jsonResponse;
+    } catch (parseError) {
+      console.error('Failed to parse:', { responseText, status: response.status });
+      throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}`);
+    }
   } catch (error) {
-    console.error('API Request Failed:', error);
+    console.error('Full API error:', {
+      url: `${API_URL}/api/users/joinWaitList`,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
     throw error;
   }
 };

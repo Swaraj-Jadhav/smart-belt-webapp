@@ -45,7 +45,7 @@ export default function FAQ() {
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-4">
                     <p className="text-gray-700">
-                      The PetTrack Smart Belt has an IP67 rating, meaning it's fully protected against dust and can withstand immersion in water up to 1 meter (3.3 feet) for up to 30 minutes. It's suitable for pets who swim occasionally or play in the rain, but we don't recommend extended submersion or deep-water swimming.
+                      The Snutto Smart Belt has an IP67 rating, meaning it's fully protected against dust and can withstand immersion in water up to 1 meter (3.3 feet) for up to 30 minutes. It's suitable for pets who swim occasionally or play in the rain, but we don't recommend extended submersion or deep-water swimming.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
