@@ -7,7 +7,7 @@ const app = express();
 // Middleware (must come before routes)
 app.use(cors({
   origin: [
-    'https://snutto.onrender.com/',
+    'https://snutto.onrender.com',
     'http://localhost:3000'
   ],
   methods: ['GET', 'POST', 'OPTIONS'],
