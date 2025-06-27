@@ -7,6 +7,16 @@ interface WaitlistFormData {
   contactNo: string;
 }
 
+export const checkBackendStatus = async (): Promise<Response> => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Backend status check failed:', error);
+    throw new Error('Unable to connect to backend service');
+  }
+};
+
 export const joinWaitlist = async (data: WaitlistFormData) => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/joinWaitList`, {
