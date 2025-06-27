@@ -20,9 +20,14 @@ app.use(express.json());
 // Mount routes with /api prefix
 app.use('/api', userRoutes);  
 
-// Health check
-app.get('/healthcheck', (req, res) => {
-  res.status(200).send('OK');
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'running',
+    message: 'Welcome to Snutto API',
+    endpoints: {
+      waitlist: '/api/users/joinWaitList',
+      healthcheck: '/healthcheck'
+    }
+  });
 });
-
 export default app;
