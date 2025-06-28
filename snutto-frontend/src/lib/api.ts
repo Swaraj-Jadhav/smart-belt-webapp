@@ -54,11 +54,8 @@ export const joinWaitlist = async (data: WaitlistFormData) => {
       console.error('Failed to parse:', { responseText, status: response.status });
       throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}`);
     }
-  } catch (error) {
-    console.error('Full API error:', {
-      url: `${config.apiUrl}/api/users/joinWaitList`,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
+  }  catch (error) {
+    console.error('API Error:', error);
     throw error;
   }
 };
