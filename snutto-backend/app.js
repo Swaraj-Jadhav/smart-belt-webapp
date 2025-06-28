@@ -4,47 +4,22 @@ import userRoutes from './routes/user.route.js';
 
 const app = express();
 
-// Configure CORS with additional security headers
-const allowedOrigins = [
-  'https://snutto.onrender.com',
-  'http://localhost:3000'
-];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`Blocked CORS request from: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+// Middleware (must come before routes)
+app.use(cors({
+  origin: [
+    'https://snutto.onrender.com',
+    'http://localhost:3000'
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  optionsSuccessStatus: 200 // For legacy browser support
-};
-
-// Apply CORS middleware
-app.use(cors(corsOptions));
-
-// Handle preflight requests globally
-app.options('*', cors(corsOptions));
-
-// Additional security headers
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || allowedOrigins[0]);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Expose-Headers', 'Authorization');
-  next();
-});
+  credentials: true
+}));
 
 app.use(express.json());
 
 // Mount routes with /api prefix
-app.use('/api', userRoutes);
+app.use('/api', userRoutes);  
 
-// Root endpoint
 app.get('/', (req, res) => {
   res.status(200).json({
     status: 'running',
@@ -62,8 +37,7 @@ app.get('/', (req, res) => {
         method: 'GET',
         description: 'Service health status'
       }
-    }
+    },
   });
 });
-
 export default app;
