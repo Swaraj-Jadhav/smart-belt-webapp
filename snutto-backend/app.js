@@ -1,8 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/user.route.js';
+import connectDB from './db/db.js';
+
+connectDB();
 
 const app = express();
+
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Middleware (must come before routes)
 app.use(cors({
