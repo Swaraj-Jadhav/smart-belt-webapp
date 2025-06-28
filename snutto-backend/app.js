@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/user.route.js';
 import connectDB from './db/db.js';
+import morgan from 'morgan'
 
 connectDB();
 
