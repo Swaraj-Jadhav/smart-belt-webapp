@@ -22,8 +22,12 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <i className="fa-solid fa-paw text-blue-600 text-2xl"></i>
-          <span className="font-bold text-xl text-blue-600">Snutto.in</span>
+          <img 
+            src="\images\snutto_logo.png" 
+            alt="Snutto Logo" 
+            className="h-8 w-auto"
+          />
+          <span className="font-bold text-xl text-blue-600">Snutto</span>
         </div>
         
         <div className="hidden md:flex space-x-8 items-center">
