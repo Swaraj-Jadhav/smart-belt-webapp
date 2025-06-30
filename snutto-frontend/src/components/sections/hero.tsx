@@ -37,7 +37,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="home" className="md:pt-32 pb-16 md:pb-24 relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen flex items-center">
+    <section id="home" className="pt-24 md:pt-32 pb-16 md:pb-24 relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen flex items-center">
           
           {/* Animated Shimmer */}
           <div className="absolute inset-0 opacity-30">
