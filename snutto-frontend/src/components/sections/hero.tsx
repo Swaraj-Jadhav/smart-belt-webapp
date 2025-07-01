@@ -17,7 +17,7 @@ export default function Hero() {
 
   // Animated counter effect
   useEffect(() => {
-    const targetCount = 465;
+    const targetCount = 498;
     const duration = 2000; // 2 seconds
     const steps = 60; // 60 fps
     const increment = targetCount / steps;
