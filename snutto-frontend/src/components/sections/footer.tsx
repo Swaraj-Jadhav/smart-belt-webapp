@@ -6,7 +6,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-6">
               <i className="fa-solid fa-paw text-blue-400 text-2xl"></i>
-              <span className="font-bold text-xl">Snutto.in</span>
+              <span className="font-bold text-xl">Snutto.com</span>
             </div>
             <p className="text-gray-400 mb-6">Innovative pet tracking technology for the modern pet parent. Keep your furry friends safe, healthy, and connected.</p>
               <div className="flex space-x-4">
@@ -78,15 +78,15 @@ export default function Footer() {
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <i className="fa-solid fa-location-dot text-blue-400 mt-1 mr-3"></i>
-                  <span className="text-gray-400">203, Sinhgad Campus, vadgaon(bk), 411041, Maharashtra, India</span>
+                  <span className="text-gray-400">203, Sinhgad Campus, vadgaon(bk), Pune-411041, Maharashtra, India</span>
                 </li>
                 <li className="flex items-start">
                   <i className="fa-solid fa-envelope text-blue-400 mt-1 mr-3"></i>
-                  <span className="text-gray-400">support@Snutto.in</span>
+                  <span className="text-gray-400">swarajj762@gmail.com</span>
                 </li>
                 <li className="flex items-start">
                   <i className="fa-solid fa-phone text-blue-400 mt-1 mr-3"></i>
-                  <span className="text-gray-400"> (+91) 98816-1676</span>
+                  <span className="text-gray-400"> (+91) 98816-21676</span>
                 </li>
                 <li className="flex items-start">
                   <i className="fa-solid fa-clock text-blue-400 mt-1 mr-3"></i>
@@ -97,7 +97,7 @@ export default function Footer() {
           </div>
           
           <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm mb-4 md:mb-0">© 2025 Snutto.in All rights reserved.</p>
+            <p className="text-gray-400 text-sm mb-4 md:mb-0">© 2025 Snutto.com All rights reserved.</p>
             <div className="flex space-x-6">
               <i className="fa-brands fa-cc-visa text-gray-400 text-2xl"></i>
               <i className="fa-brands fa-cc-mastercard text-gray-400 text-2xl"></i>
